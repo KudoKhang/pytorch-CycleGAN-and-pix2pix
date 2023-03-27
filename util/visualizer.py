@@ -5,6 +5,7 @@ import ntpath
 import time
 from . import util, html
 from subprocess import Popen, PIPE
+from .evaluation import Evaluation
 
 
 try:
@@ -182,6 +183,19 @@ class Visualizer():
                 table_row.append(wandb_image)
                 ims_dict[label] = wandb_image
             self.wandb_run.log(ims_dict)
+            
+            # Log metrics on test dataset to wandb
+            if self.current_epoch % self.opt.save_epoch_freq == 0 and self.current_epoch > 0:
+                os.system(f"python3 test.py --dataroot {self.opt.dataroot} \
+                    --name {self.name} \
+                    --model pix2pix --direction AtoB \
+                    --crop_size {self.opt.crop_size} \
+                    --load_size {self.opt.load_size} \
+                    --epoch {self.current_epoch}")
+                    
+                eval_model = Evaluation(self.current_epoch, self.name)
+                self.wandb_run.log(eval_model.run())
+            
             if epoch != self.current_epoch:
                 self.current_epoch = epoch
                 result_table.add_data(*table_row)
