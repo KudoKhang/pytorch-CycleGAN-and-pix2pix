@@ -1,0 +1,11 @@
+python3 train.py --dataroot ./datasets/ACNE04_PIX2PIX_FINAL_512 \
+         --name removal_pix2pix_512_test_log \
+         --model pix2pix --direction AtoB \
+         --use_wandb --wandb_project_name removal_pix2pix_512_aug_test_log \
+         --batch_size 4 \
+         --crop_size 512 \
+         --load_size 512 \
+         --num_threads 12 \
+         --n_epochs 900 \
+         --save_epoch_freq 2 \
+         --epoch_count 0
